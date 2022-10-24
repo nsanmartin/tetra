@@ -1,0 +1,23 @@
++=======+
+| TETRA |
++=======+
+
+The tetris game, using SDL2
+
+Run the game:
+============
+
+Install SDL2:
+
+
+Build:
+
+make tetra
+
+Run:
+
+./build/tetra
+
+Play:
+
+...
