@@ -1,3 +1,4 @@
+#include <iostream>
 #include "util.h"
 #include "Game.h"
 
@@ -5,6 +6,7 @@ namespace tetra {
 
 using std::get;
 using std::get_if;
+using std::make_unique;
 
 variant<Game,int> Game::withDimensions(int w, int h) {
     variant<SdlMedia,int> maybe = SdlMedia::withDimensions(w, h);
@@ -21,4 +23,30 @@ variant<Game,int> Game::withDimensions(int w, int h) {
             );
 }
 
+
+static bool sdl_quit_event(const SDL_Event* e) {
+    return e->type == SDL_QUIT || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_q);
+}
+
+void Game::changeState(Game::Behaviour* newstate) {
+    behaviour = unique_ptr<Behaviour>(newstate);
+}
+
+void Game::readInput() {
+    behaviour->readInput(*this);
+}
+
+void Game::Title::readInput(Game& g) {
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) {
+        if (sdl_quit_event(&e)) {
+            std::cout << "state changed\n";
+            g.changeState(new Quit{});
+            //todo: use uniq ptr
+            //game->keep_running = false;
+            //game->state = GameStateEnded;
+            //return set_game_state(game, GameStateEnded);
+        }
+    }
+}
 }

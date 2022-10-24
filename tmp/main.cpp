@@ -13,13 +13,26 @@ using std::unique_ptr;
 using std::move;
 using std::make_unique;
 using std::function;
+using std::same_as;
 
 using WinPtr = unique_ptr<SDL_Window, function<void(SDL_Window *)>>;
-//using WinPtr = unique_ptr<SDL_Window,decltype(SDL_DestroyWindow)>;
-//using WinPtr = unique_ptr<SDL_Window, void(SDL_Window*)>;
 using RendPtr = unique_ptr<SDL_Renderer, decltype(SDL_DestroyRenderer)>;
 using WinRendPair = pair<WinPtr,RendPtr>;
 using EitherWinRend = variant<WinRendPair, int>;
+
+
+template <typename T>
+concept GameBehaviour = requires (T v) {
+    {v.keepRunning()} -> same_as<bool>;
+    {v.processInput()} -> same_as<void>;
+    {v.update()()} -> same_as<void>;
+    {v.render()} -> same_as<void>;
+};
+
+//template <typename T>
+//concept GameBehaviour = requires (T v) {
+//    {v.processInput()} -> same_as<void>;
+//};
 
 int main () {
     int error = SDL_Init (SDL_INIT_VIDEO);
@@ -31,10 +44,6 @@ int main () {
     int w = 640;
     int h = 480;
 
-    //auto window = WinPtr(
-    //    SDL_CreateWindow("Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h, 0),
-    //    SDL_DestroyWindow
-    //);
 
     WinPtr window (
         SDL_CreateWindow(
@@ -47,5 +56,4 @@ int main () {
        ),
         SDL_DestroyWindow
     );
-    //RendPtr renderer;
 }

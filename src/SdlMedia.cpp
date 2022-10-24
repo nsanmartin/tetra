@@ -35,11 +35,12 @@ SdlMedia::EitherWinRend SdlMedia::init(int w, int h) {
         return SdlMedia::EitherWinRend(-1);
     }
     
-    error = SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    if (error) {
-        SDL_DestroyWindow(window);
-        return SdlMedia::EitherWinRend(error);
-    }
+    //todo: use fullscreen?
+    //error = SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    //if (error) {
+    //    SDL_DestroyWindow(window);
+    //    return SdlMedia::EitherWinRend(error);
+    //}
 
     renderer = SDL_CreateRenderer(
         window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC

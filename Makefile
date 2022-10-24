@@ -1,7 +1,7 @@
 SDL_CFLAGS := $(shell sdl2-config --cflags)
 SDL_LDFLAGS := $(shell sdl2-config --libs)
 
-CFLAGS = -std=c++2b -Wextra -Werror -Wall  -pedantic -I./include 
+CFLAGS = -std=c++2b -Werror -Wextra -Wall  -pedantic -I./include 
 #CC = clang++
 CC = g++
 
