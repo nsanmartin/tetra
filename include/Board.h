@@ -7,8 +7,7 @@
 #include <vector>
 #include <functional>
 
-#include "Drawable.h"
-#include "Grided.h"
+#include "DrawableGrid.h"
 
 namespace tetra {
 
@@ -17,14 +16,15 @@ using std::optional;
 using std::vector;
 using std::move;
 
-class Board : public Drawable, public Grided {
+class Board : public DrawableGrid {
     public:
     vector<uint32_t> blocks;
 
     //public:
-    Board(int w, int h) : Drawable{0,0}, Grided{w,h},  blocks(w*h, 0xFFf0FFff) {}
+    Board(Point origin, Point end, int w, int h, uint32_t blocks_color) :
+        DrawableGrid{w, h, origin, end}, blocks(w*h, blocks_color) {}
     Board(Board&& o) :
-        Drawable{o.x,o.y}, Grided{o.w, o.h}, blocks{move(o.blocks)} {}
+        DrawableGrid{o.w, o.h, o.origin, o.end}, blocks{move(o.blocks)} {}
 
     optional<reference_wrapper<uint32_t>> at(int x, int y);
 

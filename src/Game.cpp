@@ -54,6 +54,7 @@ void Game::Title::readInput(Game& g) {
 void Game::Title::render(Game& g) {
     SDL_Renderer* rend = g.media.getRenderer();
     //SDL_SetRenderDrawColor(rend, 0, 81, 177, 253 );
+    SDL_SetRenderDrawColor(rend, 0, 0, 0, 0xff );
     SDL_RenderClear(rend);
     for (int x = 0; x < g.board.w; ++x) {
         for (int y = 0; y < g.board.h; ++y) {
@@ -69,7 +70,7 @@ void Game::Title::render(Game& g) {
 
 void Game::renderBlock(int x, int y, uint32_t color) {
     SDL_Renderer* rend = media.getRenderer();
-    //todo: use the color
+
     SDL_SetRenderDrawColor(
         rend,
         (color >> 24) & 0xff,
@@ -78,8 +79,7 @@ void Game::renderBlock(int x, int y, uint32_t color) {
         color & 0xff
     );
 
-    //todo: block to rect
-    SDL_Rect rect = media.toSdlRect(board, x, y);
+    SDL_Rect rect = board.toSdlRect(x, y);
     SDL_RenderFillRect(rend, &rect );
 
 }

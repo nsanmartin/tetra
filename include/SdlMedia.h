@@ -56,18 +56,6 @@ class SdlMedia : public Grided {
 
     SDL_Renderer* getRenderer() { return renderer.get(); }
 
-    SDL_Rect toSdlRect(Grided& contained, int x, int y) { 
-        const int block_width {w/contained.w};
-        const int block_height {h/contained.h};
-
-        return SDL_Rect{
-            x * block_width, 
-            y * block_height,
-            block_width,
-            block_height
-        };
-    }
-
 };
 }
 

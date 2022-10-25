@@ -43,7 +43,17 @@ class Game {
     
 
     Game(SdlMedia& media) :
-        media{move(media)}, state{State::Title}, behaviour{new Title{}}, board{10,20} {}
+        media{move(media)},
+        state{State::Title},
+        behaviour{new Title{}},
+        board{
+            Point{(media.w * 5)/100, (media.h * 5)/100},
+            Point{(media.w * 95)/100, (media.h * 95)/100},
+            10,
+            20,
+            0xFF884488
+        }
+    {}
     Game(Game const&g) = delete;
     Game& operator=(const Game& o) = delete;
     Game& operator=(Game&& o) = delete;
