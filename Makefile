@@ -15,11 +15,9 @@ SRCS=$(wildcard src/*.cpp)
 tetra:build
 	$(CC) $(CFLAGS) $(SDL_CFLAGS) -o $(BUILD)/$@ main.cpp $(SRCS) $(SDL_LDFLAGS)
 
-tmalloc0:build
-	$(CC) -DMALLOC_TIMES$(MALLOCTIMES) $(CFLAGS) $(SDL_CFLAGS) -o $(BUILD)/$@ main.c $(SRCS) $(SDL_LDFLAGS)
 
 debug:build
-	$(CC) -g $(CFLAGS) $(SDL_CFLAGS) -o $(BUILD)/$@ main.c $(SRCS) $(SDL_LDFLAGS)
+	$(CC) -g $(CFLAGS) $(SDL_CFLAGS) -o $(BUILD)/$@ main.cpp $(SRCS) $(SDL_LDFLAGS)
 
 
 build:

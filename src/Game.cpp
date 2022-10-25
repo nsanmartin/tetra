@@ -79,7 +79,7 @@ void Game::renderBlock(int x, int y, uint32_t color) {
     );
 
     //todo: block to rect
-    SDL_Rect rect = SDL_Rect{x, y, x, y};
+    SDL_Rect rect = media.toSdlRect(board, x, y);
     SDL_RenderFillRect(rend, &rect );
 
 }
