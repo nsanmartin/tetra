@@ -40,7 +40,7 @@ void loop(Game& game) {
           //game->update(game);
         }
 
-        //game->render(game);
+        game.render();
     }
 }
 

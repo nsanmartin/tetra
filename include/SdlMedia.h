@@ -51,6 +51,8 @@ class SdlMedia {
     SdlMedia& operator=(SdlMedia&& o) noexcept = delete;
 
     pair<int,int> getDimensions() { return make_pair(w,h); }
+
+    SDL_Renderer* getRenderer() { return renderer.get(); }
 };
 }
 

@@ -49,4 +49,38 @@ void Game::Title::readInput(Game& g) {
         }
     }
 }
+
+
+void Game::Title::render(Game& g) {
+    SDL_Renderer* rend = g.media.getRenderer();
+    //SDL_SetRenderDrawColor(rend, 0, 81, 177, 253 );
+    SDL_RenderClear(rend);
+    for (int x = 0; x < g.board.w; ++x) {
+        for (int y = 0; y < g.board.h; ++y) {
+            //todo: else case
+            if (auto color = g.board.at(x, y)) {
+                g.renderBlock(x, y, *color);
+            }
+        }
+    }
+
+    SDL_RenderPresent(rend);
 }
+
+void Game::renderBlock(int x, int y, uint32_t color) {
+    SDL_Renderer* rend = media.getRenderer();
+    //todo: use the color
+    SDL_SetRenderDrawColor(
+        rend,
+        (color >> 24) & 0xff,
+        (color >> 16) & 0xff,
+        (color >> 8) & 0xff,
+        color & 0xff
+    );
+
+    //todo: block to rect
+    SDL_Rect rect = SDL_Rect{x, y, x, y};
+    SDL_RenderFillRect(rend, &rect );
+
+}
+} // namespace

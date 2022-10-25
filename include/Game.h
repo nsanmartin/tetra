@@ -6,6 +6,7 @@
 
 #include "SdlMedia.h"
 #include "util.h"
+#include "Board.h"
 
 namespace tetra {
 
@@ -32,28 +33,31 @@ class Game {
         virtual bool quit() = 0;
         virtual void readInput(Game& g) = 0;
         // virtual void update() = 0;
-        // virtual void render() = 0;
+        virtual void render(Game& g) = 0;
     };
 
     SdlMedia media;
     State state;
     unique_ptr<Behaviour> behaviour;
-    //Board* board;
+    Board board;
     
 
-    Game(SdlMedia& media) : media{move(media)}, state{State::Title}, behaviour{new Title{}} {}
+    Game(SdlMedia& media) :
+        media{move(media)}, state{State::Title}, behaviour{new Title{}}, board{10,20} {}
     Game(Game const&g) = delete;
     Game& operator=(const Game& o) = delete;
     Game& operator=(Game&& o) = delete;
 
     public:
     Game(Game&& g) noexcept :
-        media{move(g.media)}, state{g.state}, behaviour{move(g.behaviour)} {}
+        media{move(g.media)}, state{g.state}, behaviour{move(g.behaviour)}, board{move(g.board)} {}
     static variant<Game,int> withDimensions(int w, int h);
 
     bool quit() const { return behaviour->quit(); }
+    void render() { behaviour->render(*this); }
     void readInput() ;
 
+    void renderBlock(int x, int y, uint32_t color);
 
     private:
     friend class Behaviour;
@@ -64,12 +68,14 @@ class Game {
         Title() {}
         bool quit() override { return false; }
         void readInput(Game& g) override; // {}
+        void render(Game& g) override ;
     };
 
     class Quit : public Behaviour {
         public:
         bool quit() override { return true; }
         void readInput(Game& g) override { g.ignoreInput(); }
+        void render(Game& g) override { g.ignoreInput(); } //Todo render something
     };
 
 
