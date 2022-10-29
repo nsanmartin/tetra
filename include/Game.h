@@ -32,7 +32,7 @@ class Game {
         public:
         virtual bool quit() = 0;
         virtual void readInput(Game& g) = 0;
-        // virtual void update() = 0;
+        virtual void update(Game& g) = 0;
         virtual void render(Game& g) = 0;
     };
 
@@ -65,6 +65,7 @@ class Game {
 
     bool quit() const { return behaviour->quit(); }
     void render() { behaviour->render(*this); }
+    void update() { behaviour->update(*this); }
     void readInput() ;
 
     void renderBlock(int x, int y, uint32_t color);
@@ -79,6 +80,7 @@ class Game {
         bool quit() override { return false; }
         void readInput(Game& g) override; // {}
         void render(Game& g) override ;
+	void update(Game& g) override;
     };
 
     class Quit : public Behaviour {
@@ -86,6 +88,7 @@ class Game {
         bool quit() override { return true; }
         void readInput(Game& g) override { g.ignoreInput(); }
         void render(Game& g) override { g.ignoreInput(); } //Todo render something
+	void update(Game& g) override { g.ignoreInput(); }
     };
 
 

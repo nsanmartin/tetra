@@ -26,11 +26,14 @@ class Board : public DrawableGrid {
 
     //public:
     Board(Point origin, Point end, int w, int h, uint32_t blocks_color) :
-        DrawableGrid{w, h, origin, end}, blocks(w*h, blocks_color) {}
+        DrawableGrid{w, h, origin, end},
+	blocks(w*h, blocks_color),
+	mino(unique_ptr<TetraminoL>(new TetraminoL{Point{w/2,1}}))
+ 	{}
     Board(Board&& o) :
         DrawableGrid{o.w, o.h, o.origin, o.end},
         blocks{move(o.blocks)},
-	mino(unique_ptr<TetraminoL>(new TetraminoL{}))
+	mino{move(o.mino)}
     {}
 
     optional<reference_wrapper<uint32_t>> at(int x, int y);

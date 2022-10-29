@@ -36,10 +36,11 @@ void loop(Game& game) {
         
         game.readInput();
 
-        for (;!game.quit() && lag >= slice; lag -= slice){
-          //game->update(game);
-        }
+        //for (;!game.quit() && lag >= slice; lag -= slice){
+        game.update();
+        //}
 
+        SDL_Delay(500);
         game.render();
     }
 }

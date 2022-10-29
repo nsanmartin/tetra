@@ -65,7 +65,15 @@ void Game::Title::render(Game& g) {
         }
     }
 
+    for (auto* it = g.board.mino->beg(); it < g.board.mino->end(); ++it) {
+	    Point p = *it + g.board.mino->pos();
+	    g.renderBlock(p.x, p.y, 0xffffffff);
+    }
     SDL_RenderPresent(rend);
+}
+
+void Game::Title::update(Game& g) {
+        g.board.mino->stepDown();
 }
 
 void Game::renderBlock(int x, int y, uint32_t color) {

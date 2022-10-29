@@ -5,6 +5,7 @@
 
 namespace tetra {
 
+//todo: do we need move ctors?
 class Mino {
 	public:
 	virtual Point pos() const = 0;
@@ -18,6 +19,7 @@ class Tetramino : public Mino {
 	Point pos_;
 
 	public:
+	Tetramino(Point pos) : pos_{pos} {}
 	void stepDown() override { ++pos_.y; }
 	Point pos() const override { return pos_; }
 };
@@ -27,7 +29,7 @@ class TetraminoL : public Tetramino {
 	public:
 	Point* beg() override;
 	Point* end() override;
-	TetraminoL() {}
+	TetraminoL(Point pos) : Tetramino{pos} {}
 };
 } // namespace tetra
 
