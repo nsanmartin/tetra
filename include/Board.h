@@ -21,6 +21,7 @@ using std::unique_ptr;
 
 class Board : public DrawableGrid {
     public:
+    //todo: use vector of points instead
     vector<uint32_t> blocks;
     unique_ptr<Mino> mino;
 
@@ -28,7 +29,7 @@ class Board : public DrawableGrid {
     Board(Point origin, Point end, int w, int h, uint32_t blocks_color) :
         DrawableGrid{w, h, origin, end},
 	blocks(w*h, blocks_color),
-	mino(unique_ptr<TetraminoL>(new TetraminoL{Point{w/2,1}}))
+	mino(unique_ptr<Tetramino>(Tetramino::L(Point{w/2,1})))
  	{}
     Board(Board&& o) :
         DrawableGrid{o.w, o.h, o.origin, o.end},

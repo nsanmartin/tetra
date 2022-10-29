@@ -3,7 +3,9 @@
 
 struct Point {
     int x,y;
-    Point operator+(const Point& o) { return Point{x+o.x, y+o.y}; }
+    //Point operator+(const Point& o) { return Point{x+o.x, y+o.y}; }
 };
+
+Point operator+(const Point& p, const Point& q);
 #endif
 
