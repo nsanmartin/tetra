@@ -1,0 +1,6 @@
+/home/nico/.ssh/config: line 3: Bad configuration option: usekeychain
+/home/nico/.ssh/config: terminating, 1 bad configuration options
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
