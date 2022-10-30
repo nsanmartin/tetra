@@ -6,7 +6,8 @@
 
 #include "SdlMedia.h"
 #include "util.h"
-#include "Board.h"
+//#include "Board.h"
+#include "DrawableGrid.h"
 
 namespace tetra {
 
@@ -39,15 +40,34 @@ class Game {
     SdlMedia media;
     State state;
     unique_ptr<Behaviour> behaviour;
-    Board board;
+    DrawableGrid board;
     
 
-    Game(SdlMedia& media, Point board_origin, Point board_end, int cols, int rows) :
+    Game(SdlMedia& media) :
         media{move(media)},
         state{State::Title},
         behaviour{new Title{}},
-        board{board_origin, board_end, cols, rows, 0}
-    {}
+        board{
+            Point{(media.w * 5)/100, (media.h * 5)/100},
+            Point{(media.w * 95)/100, (media.h * 95)/100},
+            //Point{0,0},
+            //Point{media.w, media.h}, 
+            10,
+<<<<<<< HEAD
+            20
+=======
+            20,
+            0
+>>>>>>> origin/master
+        }
+        //0xFF884488
+    {
+        //todo: remove
+        board.blocks.emplace(Point{0,0});
+        board.blocks.emplace(Point{1,0});
+        //board.blocks.emplace(Point{2,0});
+        //board.blocks.emplace(Point{3,0});
+    }
     Game(Game const&g) = delete;
     Game& operator=(const Game& o) = delete;
     Game& operator=(Game&& o) = delete;

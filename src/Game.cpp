@@ -9,18 +9,28 @@ using std::get;
 using std::get_if;
 using std::make_unique;
 using std::max_element;
+using std::min;
 
 
 variant<Game,int> Game::withDimensions(int w, int h) {
     variant<SdlMedia,int> maybe = SdlMedia::withDimensions(w, h);
 
+    int cols = 10;
+    int rows = 25;
+    int block_width = min(w/cols, h/rows);
+
+    Point orig = Point{0,0};
+    Point end = Point{cols * block_width, rows * block_width};
+    //
     // if(SdlMedia* pval = get_if<SdlMedia>(&maybe))
     //     return  variant<Game,int>(Game(*pval)); 
     // else 
     //     return variant<Game,int>(get<int>(maybe));
 
     return variant(visit(overloaded{
-                [&w, &h](SdlMedia& media) { return variant<Game,int>(Game(media)); },
+                [&orig, &end, &cols, &rows](SdlMedia& media) {
+                    return variant<Game,int>(Game(media, orig, end, cols, rows));
+                },
                 [](int error) { return variant<Game,int>{error}; }, },
                 maybe)
             );
