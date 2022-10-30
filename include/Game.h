@@ -51,7 +51,7 @@ class Game {
             Point{(media.w * 95)/100, (media.h * 95)/100},
             10,
             20,
-            0xFF884488
+            0
         }
     {}
     Game(Game const&g) = delete;

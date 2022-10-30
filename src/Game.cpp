@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "util.h"
 #include "Game.h"
 
@@ -7,6 +8,8 @@ namespace tetra {
 using std::get;
 using std::get_if;
 using std::make_unique;
+using std::max_element;
+
 
 variant<Game,int> Game::withDimensions(int w, int h) {
     variant<SdlMedia,int> maybe = SdlMedia::withDimensions(w, h);
@@ -47,6 +50,25 @@ void Game::Title::readInput(Game& g) {
             //game->state = GameStateEnded;
             //return set_game_state(game, GameStateEnded);
         }
+
+        if (e.type == SDL_KEYDOWN) {
+            switch (e.key.keysym.sym) {
+                case SDLK_LEFT:
+                    //todo: check border
+                    g.board.mino.get()->getPos().x -= 1;
+                    break;
+
+                case SDLK_SPACE:
+                    //todo: pass the lambda
+                    //for_each (g.board.mino->beg(),
+                    //          g.board.mino->end(),
+                    //          [](Point& p) { p.rotate90deg(); }
+                    //        );
+
+                    g.board.mino->for_each_block( [](Point& p) { p.rotate90deg(); });
+                    break;
+            }
+        }
     }
 }
 
@@ -60,20 +82,49 @@ void Game::Title::render(Game& g) {
         for (int y = 0; y < g.board.h; ++y) {
             //todo: else case
             if (auto color = g.board.at(x, y)) {
-                g.renderBlock(x, y, *color);
+                    if (color->get() != 0) {
+                        g.renderBlock(x, y, *color);
+                    }
             }
         }
     }
 
     for (auto* it = g.board.mino->beg(); it < g.board.mino->end(); ++it) {
-	    Point p = *it + g.board.mino->pos();
-	    g.renderBlock(p.x, p.y, 0xffffffff);
+        Point p = *it + g.board.mino->pos();
+        g.renderBlock(p.x, p.y, 0xffffffff);
     }
     SDL_RenderPresent(rend);
 }
 
+bool mino_can_fall(Board& b, Point p) {
+
+        if (p.y < b.h) {
+                if (auto color = b.at(p.x, p.y) ) {
+                        return color->get() == 0;
+                }
+        }
+        return false;
+}
+
 void Game::Title::update(Game& g) {
-        g.board.mino->stepDown();
+        auto lower = max_element(
+                g.board.mino->beg(),
+                g.board.mino->end(),
+                [](const Point& p, const Point& q) { return p.y < q.y; }
+        );
+
+        if (mino_can_fall(g.board, *lower + g.board.mino->pos() + Point{0,1})) {
+                g.board.mino->stepDown();
+        } else {
+            for (auto* it = g.board.mino->beg(); it < g.board.mino->end(); ++it) {
+                    Point p = *it + g.board.mino->pos();
+                    if (auto color = g.board.at(p.x, p.y)) {
+                            color->get() = 0xffffffff;
+                    }
+            }
+
+                g.board.mino = unique_ptr<Tetramino>(Tetramino::L(Point{g.board.w/2,1}));
+        }
 }
 
 void Game::renderBlock(int x, int y, uint32_t color) {
