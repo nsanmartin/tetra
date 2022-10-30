@@ -74,7 +74,7 @@ class Game {
         bool quit() override { return false; }
         void readInput(Game& g) override; // {}
         void render(Game& g) override ;
-	void update(Game& g) override;
+        void update(Game& g) override;
     };
 
     class Quit : public Behaviour {

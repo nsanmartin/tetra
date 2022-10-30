@@ -20,7 +20,7 @@ using std::visit;
 
 constexpr int WINW = 480;
 constexpr int WINH = 640;
-constexpr int slice = 140;
+constexpr int slice = 340;
 
 // constexpr int slice = 140;
 
@@ -34,14 +34,14 @@ void loop(Game& game) {
         lag += current - previous;
         previous = current;
         
+
         game.readInput();
+        for (;!game.quit() && lag >= slice; lag -= slice){
+            game.update();
+        }
 
-        //for (;!game.quit() && lag >= slice; lag -= slice){
-        game.update();
-        //}
-
-        SDL_Delay(500);
         game.render();
+        SDL_Delay(70);
     }
 }
 
