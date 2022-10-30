@@ -38,6 +38,7 @@ class Board : public DrawableGrid {
     {}
 
     optional<reference_wrapper<uint32_t>> at(int x, int y);
+    //optional<bool> is_empty_at(Point p);
 
     private:
     optional<reference_wrapper<uint32_t>> at(int i);

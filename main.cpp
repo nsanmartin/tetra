@@ -35,8 +35,10 @@ void loop(Game& game) {
         previous = current;
         
 
+        //todo: extract update from within readInput 
         game.readInput();
         for (;!game.quit() && lag >= slice; lag -= slice){
+            //todo: this is tick 
             game.update();
         }
 

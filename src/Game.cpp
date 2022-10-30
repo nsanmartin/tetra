@@ -63,19 +63,38 @@ void Game::Title::readInput(Game& g) {
 
         if (e.type == SDL_KEYDOWN) {
             switch (e.key.keysym.sym) {
-                case SDLK_LEFT:
-                    //todo: check border
-                    g.board.mino.get()->getPos().x -= 1;
+                case SDLK_LEFT: {
+                        int& posx = g.board.mino.get()->getPos().x;
+                        Point& leftist = g.board.mino->min([](auto&p,auto&q){return p.x<q.x;});
+                        if (posx + leftist.x) {
+                             g.board.mino->getPos().x -= 1;
+                        }
+                    }
+                    break;
+                case SDLK_RIGHT: {
+                        int& posx = g.board.mino.get()->getPos().x;
+                        Point& rightmost = g.board.mino->max([](auto&p,auto&q){return p.x<q.x;});
+                        if (posx + rightmost.x < g.board.w) {
+                             g.board.mino->getPos().x += 1;
+                        }
+                    }
                     break;
 
-                case SDLK_SPACE:
-                    //todo: pass the lambda
-                    //for_each (g.board.mino->beg(),
-                    //          g.board.mino->end(),
-                    //          [](Point& p) { p.rotate90deg(); }
-                    //        );
+                case SDLK_SPACE: {
+                    //auto f = [](Point& p) { return true;}
 
-                    g.board.mino->for_each_block( [](Point& p) { p.rotate90deg(); });
+                        auto blocks_free = [&g](const Point& p) { 
+                            Point r = rotate90deg(p) + g.board.mino->pos();
+                            if(auto color = g.board.at(r.x, r.y)) { return color->get() == 0; }
+                            printf("fue\n");
+                            return false;
+                        };
+
+                        if (g.board.mino->all(blocks_free)) {
+                            g.board.mino->for_each_block( [](Point& p) { p.rotate90deg(); });
+
+                        };
+                    }
                     break;
             }
         }

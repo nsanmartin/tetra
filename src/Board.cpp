@@ -15,4 +15,5 @@ optional<reference_wrapper<uint32_t>> Board::at(int i) {
 optional<reference_wrapper<uint32_t>> Board::at(int x, int y) {
     return at(y*w + x);
 }
+
 }

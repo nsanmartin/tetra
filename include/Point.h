@@ -14,5 +14,6 @@ struct Point {
 
 Point operator+(const Point& p, const Point& q);
 
+Point rotate90deg(Point p);
 #endif
 
