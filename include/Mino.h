@@ -40,9 +40,6 @@ class Tetramino : public Mino {
                 pos_{pos}, data_{beg, end}
         {}
 	void stepDown() override { 
-        for (auto it = data_.begin(); it != data_.end(); ++it) {
-            Point p = *it + pos_;
-        }
         ++pos_.y;
     }
 

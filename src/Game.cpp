@@ -66,7 +66,8 @@ void Game::Title::readInput(Game& g) {
                 case SDLK_LEFT: {
                         int& posx = g.board.mino.get()->getPos().x;
                         Point& leftist = g.board.mino->min([](auto&p,auto&q){return p.x<q.x;});
-                        if (posx + leftist.x) {
+
+                        if (posx + leftist.x - 1 >= 0) {
                              g.board.mino->getPos().x -= 1;
                         }
                     }
@@ -74,7 +75,7 @@ void Game::Title::readInput(Game& g) {
                 case SDLK_RIGHT: {
                         int& posx = g.board.mino.get()->getPos().x;
                         Point& rightmost = g.board.mino->max([](auto&p,auto&q){return p.x<q.x;});
-                        if (posx + rightmost.x < g.board.w) {
+                        if (posx + rightmost.x + 1 < g.board.w) {
                              g.board.mino->getPos().x += 1;
                         }
                     }
