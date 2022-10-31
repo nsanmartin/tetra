@@ -127,12 +127,12 @@ void Game::Title::render(Game& g) {
 
 bool mino_can_fall(Board& b, Point p) {
 
-        if (p.y < b.h) {
-                if (auto color = b.at(p.x, p.y) ) {
-                        return color->get() == 0;
-                }
+    //if (p.y <= b.h) {
+        if (auto color = b.at(p.x, p.y) ) {
+            return color->get() == 0;
         }
-        return false;
+    //}
+    return false;
 }
 
 void Game::Title::update(Game& g) {
@@ -150,7 +150,9 @@ void Game::Title::update(Game& g) {
                     if (auto color = g.board.at(p.x, p.y)) {
                             color->get() = 0xffffffff;
                     }
+                printf("__(%d, %d) ", p.x, p.y);
             }
+        puts("");
 
                 g.board.mino = unique_ptr<Tetramino>(Tetramino::L(Point{g.board.w/2,1}));
         }

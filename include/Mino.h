@@ -39,7 +39,15 @@ class Tetramino : public Mino {
 	Tetramino(Point pos, Point* beg, Point* end) :
                 pos_{pos}, data_{beg, end}
         {}
-	void stepDown() override { ++pos_.y; }
+	void stepDown() override { 
+        for (auto it = data_.begin(); it != data_.end(); ++it) {
+            Point p = *it + pos_;
+            printf("(%d, %d) ", p.x, p.y);
+        }
+        puts("");
+        ++pos_.y;
+    }
+
 	Point pos() const override { return pos_; }
 	const Point* beg() const override { return &*data_.begin(); }
 	const Point* end() const override { return &*data_.end(); }
