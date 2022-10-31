@@ -64,30 +64,34 @@ void Game::Title::readInput(Game& g) {
         if (e.type == SDL_KEYDOWN) {
             switch (e.key.keysym.sym) {
                 case SDLK_LEFT: {
-                        int& posx = g.board.mino.get()->getPos().x;
-                        Point& leftist = g.board.mino->min([](auto&p,auto&q){return p.x<q.x;});
+                        auto blocks_free = [&g](const Point& p) { 
+                            Point r = p + g.board.mino->pos();
+                            if(auto color = g.board.at(r.x - 1, r.y)) { return color->get() == 0; }
+                            return false;
+                        };
 
-                        if (posx + leftist.x - 1 >= 0) {
+                        if (g.board.mino->all(blocks_free)) {
                              g.board.mino->getPos().x -= 1;
                         }
                     }
                     break;
                 case SDLK_RIGHT: {
-                        int& posx = g.board.mino.get()->getPos().x;
-                        Point& rightmost = g.board.mino->max([](auto&p,auto&q){return p.x<q.x;});
-                        if (posx + rightmost.x + 1 < g.board.w) {
+                        auto blocks_free = [&g](const Point& p) { 
+                            Point r = p + g.board.mino->pos();
+                            if(auto color = g.board.at(r.x + 1, r.y)) { return color->get() == 0; }
+                            return false;
+                        };
+
+                        if (g.board.mino->all(blocks_free)) {
                              g.board.mino->getPos().x += 1;
                         }
                     }
                     break;
 
                 case SDLK_SPACE: {
-                    //auto f = [](Point& p) { return true;}
-
                         auto blocks_free = [&g](const Point& p) { 
                             Point r = rotate90deg(p) + g.board.mino->pos();
                             if(auto color = g.board.at(r.x, r.y)) { return color->get() == 0; }
-                            printf("fue\n");
                             return false;
                         };
 
@@ -137,13 +141,13 @@ bool mino_can_fall(Board& b, Point p) {
 }
 
 void Game::Title::update(Game& g) {
-        auto lower = max_element(
-                g.board.mino->beg(),
-                g.board.mino->end(),
-                [](const Point& p, const Point& q) { return p.y < q.y; }
-        );
+        auto blocks_free = [&g](const Point& p) { 
+            Point r = p + g.board.mino->pos();
+            if(auto color = g.board.at(r.x, r.y + 1)) { return color->get() == 0; }
+            return false;
+        };
 
-        if (mino_can_fall(g.board, *lower + g.board.mino->pos() + Point{0,1})) {
+        if (g.board.mino->all(blocks_free)) {
             g.board.mino->stepDown();
         } else {
             for (auto* it = g.board.mino->beg(); it < g.board.mino->end(); ++it) {
