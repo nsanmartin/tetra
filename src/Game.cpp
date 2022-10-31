@@ -88,6 +88,18 @@ void Game::Title::readInput(Game& g) {
                     }
                     break;
 
+                case SDLK_DOWN: {
+                        auto blocks_free = [&g](const Point& p) { 
+                            Point r = p + g.board.mino->pos();
+                            if(auto color = g.board.at(r.x, r.y + 1)) { return color->get() == 0; }
+                            return false;
+                        };
+
+                        if (g.board.mino->all(blocks_free)) {
+                             g.board.mino->getPos().y += 1;
+                        }
+                    }
+                    break;
                 case SDLK_SPACE: {
                         auto blocks_free = [&g](const Point& p) { 
                             Point r = rotate90deg(p) + g.board.mino->pos();
