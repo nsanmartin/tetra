@@ -143,18 +143,16 @@ void Game::Title::update(Game& g) {
         );
 
         if (mino_can_fall(g.board, *lower + g.board.mino->pos() + Point{0,1})) {
-                g.board.mino->stepDown();
+            g.board.mino->stepDown();
         } else {
             for (auto* it = g.board.mino->beg(); it < g.board.mino->end(); ++it) {
-                    Point p = *it + g.board.mino->pos();
-                    if (auto color = g.board.at(p.x, p.y)) {
-                            color->get() = 0xffffffff;
-                    }
-                printf("__(%d, %d) ", p.x, p.y);
+                Point p = *it + g.board.mino->pos();
+                if (auto color = g.board.at(p.x, p.y)) {
+                    color->get() = 0xffffffff;
+                }
             }
-        puts("");
 
-                g.board.mino = unique_ptr<Tetramino>(Tetramino::L(Point{g.board.w/2,1}));
+            g.board.mino = unique_ptr<Tetramino>(Tetramino::L(Point{g.board.w/2,1}));
         }
 }
 

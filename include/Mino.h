@@ -42,9 +42,7 @@ class Tetramino : public Mino {
 	void stepDown() override { 
         for (auto it = data_.begin(); it != data_.end(); ++it) {
             Point p = *it + pos_;
-            printf("(%d, %d) ", p.x, p.y);
         }
-        puts("");
         ++pos_.y;
     }
 
