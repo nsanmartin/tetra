@@ -170,6 +170,11 @@ void Game::Title::update(Game& g) {
             }
 
             g.board.mino = unique_ptr<Tetramino>(Tetramino::L(Point{g.board.w/2,1}));
+            auto lines = g.board.getLines();
+            if (lines.size()) {
+                g.board.clearLines(lines);
+                g.board.dropLines(lines.size(), lines.back());
+            }
         }
 }
 

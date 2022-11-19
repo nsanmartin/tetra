@@ -18,4 +18,44 @@ optional<reference_wrapper<uint32_t>> Board::at(int x, int y) {
         : nullopt;
 }
 
+vector<int> Board::getLines() {
+    vector<int> res{};
+    for (int i = 0; i < h; ++i) {
+        bool line = true;
+        //todo: use lambda
+        for (int j = 0; j < w; ++j) {
+            if (auto color = at(j, i)) {
+                if (color == 0) {
+                   line = false; 
+                   break;
+                }
+            }
+        }
+        if (line) { res.push_back(i); }
+    }
+    return res;
 }
+
+void Board::clearLines(const vector<int>& lines) {
+    for (auto l: lines) {
+        for (int col = 0; col < w; ++col) {
+            if (auto color = at(col, l)) {
+                color->get() = 0x0;
+            }
+        }
+    }
+}
+
+void Board::dropLines(int nlines, int lowest) {
+    for (; lowest > 0; --lowest) {
+        for (int col = 0; col < w; ++col) {
+            if (auto color = at(col, lowest - nlines)) {
+                if (auto cleared = at(col, lowest)) {
+                    cleared ->get() = color->get();
+                }
+            }
+        }
+    }
+}
+
+} // namespace tetra

@@ -39,6 +39,9 @@ class Board : public DrawableGrid {
 
     optional<reference_wrapper<uint32_t>> at(int x, int y);
     //optional<bool> is_empty_at(Point p);
+    vector<int> getLines() ;
+    void clearLines(const vector<int>& lines);
+    void dropLines(int nlines, int lowest);
 
     private:
     optional<reference_wrapper<uint32_t>> at(int i);
