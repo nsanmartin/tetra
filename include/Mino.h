@@ -48,7 +48,7 @@ class Tetramino : public Mino {
 	const Point* end() const override { return &*data_.end(); }
 
         Point& getPos() override { return pos_; }
-        static Tetramino* L(Point pos);
+        static Tetramino* Rand(Point pos);
 
 
         void for_each_block(function<void(Point&)> f) override {
