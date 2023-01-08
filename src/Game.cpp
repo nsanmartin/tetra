@@ -210,6 +210,11 @@ void Game::Play::update(Game& g) {
                 g.board.clearLines(lines);
                 g.board.dropLines(lines.size(), lines.back());
             }
+
+            if (!g.board.mino->all(blocks_free)) {
+                //todo: transition to Ended state
+                exit(0); // :)
+            }
         }
 }
 
