@@ -25,7 +25,6 @@ constexpr int slice = 340;
 // constexpr int slice = 140;
 
 void loop(Game& game) {
-    cout << "loop\n";
     long previous = get_time_millis();
     long lag = 0;
 

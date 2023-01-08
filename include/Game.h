@@ -33,7 +33,7 @@ class Game {
         virtual bool quit() = 0;
         virtual void readInput(Game& g) = 0;
         virtual void update(Game& g) = 0;
-        virtual void render(Game& g) = 0;
+        virtual int render(Game& g) = 0;
     };
 
     SdlMedia media;
@@ -44,8 +44,8 @@ class Game {
 
     Game(SdlMedia& media, Point board_origin, Point board_end, int cols, int rows) :
         media{move(media)},
-        state{State::Title},
-        behaviour{new Title{}},
+        state{State::Play},
+        behaviour{new Play{}},
         board{board_origin, board_end, cols, rows, 0}
     {}
     Game(Game const&g) = delete;
@@ -58,7 +58,7 @@ class Game {
     static variant<Game,int> withDimensions(int w, int h);
 
     bool quit() const { return behaviour->quit(); }
-    void render() { behaviour->render(*this); }
+    int render() { return behaviour->render(*this); }
     void update() { behaviour->update(*this); }
     void readInput() ;
 
@@ -68,12 +68,14 @@ class Game {
     friend class Behaviour;
     void changeState(Behaviour* newstate);
 
-    class Title : public Behaviour {
+    class Play : public Behaviour {
+        int renderFallingMino(Game& g) ;
+        int renderDroppedMinos(Game& g) ;
         public:
-        Title() {}
+        Play() {}
         bool quit() override { return false; }
         void readInput(Game& g) override; // {}
-        void render(Game& g) override ;
+        int render(Game& g) override ;
         void update(Game& g) override;
     };
 
@@ -81,7 +83,7 @@ class Game {
         public:
         bool quit() override { return true; }
         void readInput(Game& g) override { g.ignoreInput(); }
-        void render(Game& g) override { g.ignoreInput(); } //Todo render something
+        int render(Game& g) override { g.ignoreInput(); return 0; } //Todo render something
 	void update(Game& g) override { g.ignoreInput(); }
     };
 

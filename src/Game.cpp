@@ -21,11 +21,6 @@ variant<Game,int> Game::withDimensions(int w, int h) {
 
     Point orig = Point{0,0};
     Point end = Point{cols * block_width, rows * block_width};
-    //
-    // if(SdlMedia* pval = get_if<SdlMedia>(&maybe))
-    //     return  variant<Game,int>(Game(*pval)); 
-    // else 
-    //     return variant<Game,int>(get<int>(maybe));
 
     return variant(visit(overloaded{
                 [&orig, &end, &cols, &rows](SdlMedia& media) {
@@ -49,7 +44,7 @@ void Game::readInput() {
     behaviour->readInput(*this);
 }
 
-void Game::Title::readInput(Game& g) {
+void Game::Play::readInput(Game& g) {
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         if (sdl_quit_event(&e)) {
@@ -100,6 +95,7 @@ void Game::Title::readInput(Game& g) {
                         }
                     }
                     break;
+                case SDLK_UP:
                 case SDLK_SPACE: {
                         auto blocks_free = [&g](const Point& p) { 
                             Point r = rotate90deg(p) + g.board.mino->pos();
@@ -118,12 +114,15 @@ void Game::Title::readInput(Game& g) {
     }
 }
 
+int Game::Play::renderFallingMino(Game& g) {
+    for (auto* it = g.board.mino->beg(); it < g.board.mino->end(); ++it) {
+        Point p = *it + g.board.mino->pos();
+        g.renderBlock(p.x, p.y, 0xffffffff);
+    }
+    return 0;
+}
 
-void Game::Title::render(Game& g) {
-    SDL_Renderer* rend = g.media.getRenderer();
-    //SDL_SetRenderDrawColor(rend, 0, 81, 177, 253 );
-    SDL_SetRenderDrawColor(rend, 0, 0, 0, 0xff );
-    SDL_RenderClear(rend);
+int Game::Play::renderDroppedMinos(Game& g) {
     for (int x = 0; x < g.board.w; ++x) {
         for (int y = 0; y < g.board.h; ++y) {
             //todo: else case
@@ -134,12 +133,22 @@ void Game::Title::render(Game& g) {
             }
         }
     }
+    return 0;
+}
 
-    for (auto* it = g.board.mino->beg(); it < g.board.mino->end(); ++it) {
-        Point p = *it + g.board.mino->pos();
-        g.renderBlock(p.x, p.y, 0xffffffff);
-    }
+int Game::Play::render(Game& g) {
+    SDL_Renderer* rend = g.media.getRenderer();
+    //SDL_SetRenderDrawColor(rend, 0, 81, 177, 253 );
+    SDL_SetRenderDrawColor(rend, 0, 0, 0, 0xff );
+    SDL_RenderClear(rend);
+
+    int error = renderFallingMino(g);
+    if (error) { return error; }
+    error = renderDroppedMinos(g);
+    if (error) { return error; }
+
     SDL_RenderPresent(rend);
+    return 0;
 }
 
 bool mino_can_fall(Board& b, Point p) {
@@ -152,7 +161,7 @@ bool mino_can_fall(Board& b, Point p) {
     return false;
 }
 
-void Game::Title::update(Game& g) {
+void Game::Play::update(Game& g) {
         auto blocks_free = [&g](const Point& p) { 
             Point r = p + g.board.mino->pos();
             if(auto color = g.board.at(r.x, r.y + 1)) { return color->get() == 0; }
