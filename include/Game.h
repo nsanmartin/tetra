@@ -71,6 +71,7 @@ class Game {
     class Play : public Behaviour {
         int renderFallingMino(Game& g) ;
         int renderDroppedMinos(Game& g) ;
+        int renderBoardFrame(Game& g);
         public:
         Play() {}
         bool quit() override { return false; }

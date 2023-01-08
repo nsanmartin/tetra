@@ -13,14 +13,14 @@ using std::min;
 
 
 variant<Game,int> Game::withDimensions(int w, int h) {
-    variant<SdlMedia,int> maybe = SdlMedia::withDimensions(w, h);
-
     int cols = 10;
     int rows = 25;
     int block_width = min(w/cols, h/rows);
 
-    Point orig = Point{0,0};
+    Point orig = Point{block_width, 1};
     Point end = Point{cols * block_width, rows * block_width};
+
+    variant<SdlMedia,int> maybe = SdlMedia::withDimensions(w, h);
 
     return variant(visit(overloaded{
                 [&orig, &end, &cols, &rows](SdlMedia& media) {
@@ -136,6 +136,30 @@ int Game::Play::renderDroppedMinos(Game& g) {
     return 0;
 }
 
+int Game::Play::renderBoardFrame(Game& g) {
+    int y = 0;
+    int x = g.board.w;
+    //const int x = 0;
+    //todo find better colors
+    //const uint32_t color = 0xafbfccfd;
+    const uint32_t color = 0xffffffff;
+    constexpr uint32_t even = 0x7aa7a7aa;
+    constexpr uint32_t odd = 0x67f29fde;
+
+    for (y = 0; y < g.board.h; ++y) {
+        g.renderBlock(g.board.w, y, color & ((y % 2 == 0) ? even : odd));
+        g.renderBlock(-1, y, color & ((y % 2 == 0) ? odd : even));
+    }
+
+    y = g.board.h;
+    for (x = 0; x <= g.board.w; ++x) {
+        g.renderBlock(x, y, color & ((x % 2 == 1) ? even : odd));
+    }
+    g.renderBlock(-1, y, color & even);
+
+    return 0;
+}
+
 int Game::Play::render(Game& g) {
     SDL_Renderer* rend = g.media.getRenderer();
     //SDL_SetRenderDrawColor(rend, 0, 81, 177, 253 );
@@ -145,6 +169,8 @@ int Game::Play::render(Game& g) {
     int error = renderFallingMino(g);
     if (error) { return error; }
     error = renderDroppedMinos(g);
+    if (error) { return error; }
+    error = renderBoardFrame(g);
     if (error) { return error; }
 
     SDL_RenderPresent(rend);

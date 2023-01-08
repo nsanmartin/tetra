@@ -15,6 +15,7 @@ using tetra::NS_PER_MS;
 using std::variant;
 using tetra::overloaded;
 using std::cout;
+using std::cerr;
 using std::visit;
 
 
@@ -27,6 +28,7 @@ constexpr int slice = 340;
 void loop(Game& game) {
     long previous = get_time_millis();
     long lag = 0;
+    int error = 0;
 
     while (!game.quit()) {
         long current = get_time_millis();
@@ -41,7 +43,11 @@ void loop(Game& game) {
             game.update();
         }
 
-        game.render();
+        error = game.render();
+        if (error) {
+            cerr << "An error ocurred rendering game. Exiting\n";
+        }
+
         SDL_Delay(70);
     }
 }
@@ -61,7 +67,7 @@ int main() {
     variant<Game,int> maybe_play = Game::withDimensions(WINW, WINH);
     visit(overloaded {
             [](Game& game) { loop(game); },
-            [](int error) { cout << "An error ocurred :/: "<<error<<"\n"; }
+            [](int error) { cerr << "An error ocurred :/: "<< error <<"\n"; }
         },
         maybe_play
     );
