@@ -50,7 +50,6 @@ void Game::Play::readInput(Game& g) {
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         if (sdl_quit_event(&e)) {
-            std::cout << "state changed\n";
             g.changeState(new Quit{});
             //todo: use uniq ptr
             //game->keep_running = false;
@@ -111,6 +110,28 @@ void Game::Play::readInput(Game& g) {
                         };
                     }
                     break;
+                case SDLK_p: {
+                        g.changeState(new Pause{});
+                    }
+                    break;
+            }
+        }
+    }
+}
+
+void Game::Pause::readInput(Game& g) {
+    ignore = g;
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) {
+        if (sdl_quit_event(&e)) {
+            g.changeState(new Quit{});
+        }
+
+        if (e.type == SDL_KEYDOWN) {
+            switch (e.key.keysym.sym) {
+                case SDLK_p: {
+                    g.changeState(new Play{});
+                }
             }
         }
     }

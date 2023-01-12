@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <vector>
+#include <tuple>
 
 #include "SdlMedia.h"
 #include "util.h"
@@ -13,6 +14,7 @@ namespace tetra {
 using std::move;
 using std::same_as;
 using std::vector;
+using std::ignore;
 
 // template <typename T>
 // concept GameBehaviour = requires (T v) {
@@ -92,18 +94,23 @@ class Game {
         void readInput(Game& g) override; // {}
         int render(Game& g) override ;
         void update(Game& g) override;
+
+    };
+
+    class Pause : public Play {
+        public:
+        void readInput(Game& g) override; // {}
+        void update(Game& g) override { ignore = g; }
     };
 
     class Quit : public Behaviour {
         public:
         bool quit() override { return true; }
-        void readInput(Game& g) override { g.ignoreInput(); }
-        int render(Game& g) override { g.ignoreInput(); return 0; } //Todo render something
-	void update(Game& g) override { g.ignoreInput(); }
+        void readInput(Game& g) override { ignore = g; }
+        int render(Game& g) override { ignore = g; return 0; } //Todo render something
+	void update(Game& g) override { ignore = g; }
     };
 
-
-    void ignoreInput() const {};
 };
 
 
