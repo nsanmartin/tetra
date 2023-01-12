@@ -40,21 +40,35 @@ class Game {
     State state;
     unique_ptr<Behaviour> behaviour;
     Board board;
+
+    public:
+    int slice;
+
+    private:
     
 
-    Game(SdlMedia& media, Point board_origin, Point board_end, int cols, int rows) :
+    Game(SdlMedia& media, Point board_origin, Point board_end, int cols, int rows, int slice) :
         media{move(media)},
         state{State::Play},
         behaviour{new Play{}},
-        board{board_origin, board_end, cols, rows, 0}
+        board{board_origin, board_end, cols, rows, 0},
+        slice{slice}
     {}
+
     Game(Game const&g) = delete;
+    
     Game& operator=(const Game& o) = delete;
     Game& operator=(Game&& o) = delete;
 
     public:
-    Game(Game&& g) noexcept :
-        media{move(g.media)}, state{g.state}, behaviour{move(g.behaviour)}, board{move(g.board)} {}
+    Game(Game&& g) noexcept
+        : media{move(g.media)}
+        , state{g.state}
+        , behaviour{move(g.behaviour)}
+        , board{move(g.board)}
+        , slice{g.slice}
+        {}
+
     static variant<Game,int> withDimensions(int w, int h);
 
     bool quit() const { return behaviour->quit(); }

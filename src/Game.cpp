@@ -13,18 +13,20 @@ using std::min;
 
 
 variant<Game,int> Game::withDimensions(int w, int h) {
-    int cols = 10;
-    int rows = 25;
-    int block_width = min(w/cols, h/rows);
+    const int cols = 10;
+    const int rows = 25;
+    const int block_width = min(w/cols, h/rows);
 
     Point orig = Point{block_width, 1};
     Point end = Point{cols * block_width, rows * block_width};
 
     variant<SdlMedia,int> maybe = SdlMedia::withDimensions(w, h);
 
+    const int slice = 321;
+
     return variant(visit(overloaded{
                 [&orig, &end, &cols, &rows](SdlMedia& media) {
-                    return variant<Game,int>(Game(media, orig, end, cols, rows));
+                    return variant<Game,int>(Game(media, orig, end, cols, rows, slice));
                 },
                 [](int error) { return variant<Game,int>{error}; }, },
                 maybe)
@@ -207,6 +209,7 @@ void Game::Play::update(Game& g) {
             g.board.mino = unique_ptr<Tetramino>(Tetramino::Rand(Point{g.board.w/2,1}));
             auto lines = g.board.getLines();
             if (lines.size()) {
+                g.slice -= lines.size() * 3;
                 g.board.clearLines(lines);
                 g.board.dropLines(lines.size(), lines.back());
             }

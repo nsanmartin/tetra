@@ -21,9 +21,6 @@ using std::visit;
 
 constexpr int WINW = 480;
 constexpr int WINH = 640;
-constexpr int slice = 340;
-
-// constexpr int slice = 140;
 
 void loop(Game& game) {
     long previous = get_time_millis();
@@ -38,7 +35,7 @@ void loop(Game& game) {
 
         //todo: extract update from within readInput 
         game.readInput();
-        for (;!game.quit() && lag >= slice; lag -= slice){
+        for (;!game.quit() && lag >= game.slice; lag -= game.slice){
             //todo: this is tick 
             game.update();
         }
@@ -63,8 +60,8 @@ void loop(Game& game) {
 //}
 
 int main() {
-    //variant<SdlMedia,int> maybe = SdlMedia::withDimensions(WINW, WINH);
     variant<Game,int> maybe_play = Game::withDimensions(WINW, WINH);
+
     visit(overloaded {
             [](Game& game) { loop(game); },
             [](int error) { cerr << "An error ocurred :/: "<< error <<"\n"; }
