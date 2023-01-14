@@ -27,13 +27,15 @@ class Mino {
     virtual Point& max(function<bool(const Point&,const Point&)> comp) = 0;
     virtual bool all(function<bool(const Point&)> prop) = 0;
 
+    virtual void rotate90deg() = 0;
 
 };
 
 
 class Tetramino : public Mino {
 	Point pos_;
-        vector<Point> data_;
+    vector<Point> data_;
+    static int _tmp;
 
 	public:
 	Tetramino(Point pos, Point* beg, Point* end) :
@@ -66,7 +68,52 @@ class Tetramino : public Mino {
         bool all(function<bool(const Point&)> prop) {
             return all_of(data_.begin(), data_.end(), prop);
         }
+
+        void rotate90deg() {}
 };
+
+class Tetramino_I : public Tetramino {
+    public:
+    Tetramino_I(Point pos);
+    void rotate90deg() { }
+};
+
+class Tetramino_O : public Tetramino {
+    public:
+    Tetramino_O(Point pos);
+    void rotate90deg() { }
+};
+
+class Tetramino_T : public Tetramino {
+    public:
+    Tetramino_T(Point pos);
+    void rotate90deg() { }
+};
+
+class Tetramino_J : public Tetramino {
+    public:
+    Tetramino_J(Point pos);
+    void rotate90deg() { }
+};
+
+class Tetramino_L : public Tetramino {
+    public:
+    Tetramino_L(Point pos);
+    void rotate90deg() { }
+};
+
+class Tetramino_S : public Tetramino {
+    public:
+    Tetramino_S(Point pos);
+    void rotate90deg() { }
+};
+
+class Tetramino_Z : public Tetramino {
+    public:
+    Tetramino_Z(Point pos);
+    void rotate90deg() { }
+};
+
 
 } // namespace tetra
 

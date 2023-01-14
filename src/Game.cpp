@@ -226,11 +226,15 @@ void Game::Play::update(Game& g) {
                     color->get() = 0xffffffff;
                 }
             }
-
-            g.board.mino = unique_ptr<Tetramino>(Tetramino::Rand(Point{g.board.w/2,1}));
+            Tetramino* new_one = Tetramino::Rand(Point{g.board.w/2,1});
+            if (!new_one) {
+                fprintf(stderr, "Error getting random tetra, aborting!\n");
+                exit(1);
+            }
+            g.board.mino = unique_ptr<Tetramino>(new_one);
             auto lines = g.board.getLines();
             if (lines.size()) {
-                g.slice -= lines.size() * 3;
+                g.slice -= lines.size() * 6;
                 g.board.clearLines(lines);
                 g.board.dropLines(lines.size(), lines.back());
             }
