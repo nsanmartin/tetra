@@ -29,7 +29,7 @@ class Board : public DrawableGrid {
     Board(Point origin, Point end, int w, int h, uint32_t blocks_color) :
         DrawableGrid{w, h, origin, end},
 	blocks(w*h, blocks_color),
-	mino(unique_ptr<Tetramino>(Tetramino::Rand(Point{w/2,1})))
+	mino(unique_ptr<Mino>(Tetramino::Rand(Point{w/2,1})))
  	{}
     Board(Board&& o) :
         DrawableGrid{o.w, o.h, o.origin, o.end},

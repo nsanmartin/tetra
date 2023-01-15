@@ -10,6 +10,13 @@ struct Point {
         y = -y;
         std::swap(x,y);
     }
+
+    void rotate270deg() {
+        // Rv = [ 0, 1][x] = [y]
+        //      [-1, 0][y]   [-x]
+        x = -x;
+        std::swap(x,y);
+    }
 };
 
 Point operator+(const Point& p, const Point& q);

@@ -5,6 +5,7 @@
 #include <vector>
 #include <functional>
 #include <algorithm>
+#include <iostream>
 
 #include "Point.h"
 
@@ -13,6 +14,13 @@ namespace tetra {
 using std::for_each;
 using std::vector;
 using std::function;
+using std::cout;
+
+struct MinoSz {
+    Point* ps;
+    int sz;
+};
+
 
 //todo: do we need move ctors?
 class Mino {
@@ -28,11 +36,12 @@ class Mino {
     virtual bool all(function<bool(const Point&)> prop) = 0;
 
     virtual void rotate90deg() = 0;
-
+    virtual Mino* clone() = 0;
 };
 
 
 class Tetramino : public Mino {
+    int ctr;
 	Point pos_;
     vector<Point> data_;
     static int _tmp;
@@ -41,6 +50,11 @@ class Tetramino : public Mino {
 	Tetramino(Point pos, Point* beg, Point* end) :
                 pos_{pos}, data_{beg, end}
         {}
+
+    Tetramino(Tetramino& o) : pos_{o.pos_}, data_{o.data_.begin(), o.data_.end()} {}
+
+    Mino* clone() { return new Tetramino(*this); }
+
 	void stepDown() override { 
         ++pos_.y;
     }
@@ -69,49 +83,64 @@ class Tetramino : public Mino {
             return all_of(data_.begin(), data_.end(), prop);
         }
 
-        void rotate90deg() {}
+        virtual void rotate90deg() {
+            for_each_block([](auto& p) { p.rotate90deg(); });
+        }
 };
 
-class Tetramino_I : public Tetramino {
+class Tetramino_2rotations : public Tetramino {
+    bool rotated;
+    public:
+    Tetramino_2rotations(Point pos, MinoSz tetra) ;
+    void rotate90deg() override {
+        if (rotated) {
+            for_each_block([](auto& p) { p.rotate270deg(); });
+            rotated = false;
+        } else {
+            for_each_block([](auto& p) { p.rotate90deg(); });
+            rotated = true;
+        }
+    }
+};
+
+class Tetramino_I : public Tetramino_2rotations {
     public:
     Tetramino_I(Point pos);
-    void rotate90deg() { }
 };
 
 class Tetramino_O : public Tetramino {
     public:
     Tetramino_O(Point pos);
-    void rotate90deg() { }
+    void rotate90deg() override {}
 };
 
 class Tetramino_T : public Tetramino {
     public:
     Tetramino_T(Point pos);
-    void rotate90deg() { }
 };
 
 class Tetramino_J : public Tetramino {
     public:
     Tetramino_J(Point pos);
-    void rotate90deg() { }
+    //void rotate90deg() { }
 };
 
 class Tetramino_L : public Tetramino {
     public:
     Tetramino_L(Point pos);
-    void rotate90deg() { }
+    //void rotate90deg() { }
 };
 
-class Tetramino_S : public Tetramino {
+class Tetramino_S : public Tetramino_2rotations {
     public:
     Tetramino_S(Point pos);
-    void rotate90deg() { }
+    //void rotate90deg() { }
 };
 
-class Tetramino_Z : public Tetramino {
+class Tetramino_Z : public Tetramino_2rotations {
     public:
     Tetramino_Z(Point pos);
-    void rotate90deg() { }
+    //void rotate90deg() { }
 };
 
 

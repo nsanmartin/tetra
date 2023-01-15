@@ -98,15 +98,17 @@ void Game::Play::readInput(Game& g) {
                     break;
                 case SDLK_UP:
                 case SDLK_SPACE: {
+                        //Tetramino rotated(*g.board.mino.get());
+                        auto rotated = unique_ptr<Mino>(g.board.mino->clone());
+                        rotated->rotate90deg();
                         auto blocks_free = [&g](const Point& p) { 
-                            Point r = rotate90deg(p) + g.board.mino->pos();
+                            Point r = p + g.board.mino->pos();
                             if(auto color = g.board.at(r.x, r.y)) { return color->get() == 0; }
                             return false;
                         };
 
-                        if (g.board.mino->all(blocks_free)) {
-                            g.board.mino->for_each_block( [](Point& p) { p.rotate90deg(); });
-
+                        if (rotated->all(blocks_free)) {
+                            g.board.mino->rotate90deg();
                         };
                     }
                     break;
