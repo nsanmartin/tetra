@@ -1,6 +1,7 @@
 #include "Mino.h"
 
 namespace tetra {
+long get_time_millis() ;
 
 #define LEN(ARR) (sizeof(ARR)/sizeof(ARR[0]))
 #define BEG(ARR) (&ARR[0])
@@ -40,9 +41,19 @@ Tetramino* getNthTetra(auto n, Point pos) {
 
 
 Tetramino* Tetramino::Rand(Point pos) {
-    static int ix = 0;
-    ix = (ix + 1) % LEN(tetras);
-    return getNthTetra(ix, pos);
+    static long unsigned not_random = 0;
+    long unsigned random, tries = 4;
+    do {
+        if (tries++ == 0) {
+            random = ++not_random % LEN(tetras);
+            break;
+
+        }
+        random = get_time_millis() % 8;
+    }
+    while(random >= LEN(tetras));
+    return getNthTetra(random, pos);
+    
 }
 
 Tetramino_2rotations::Tetramino_2rotations(Point pos, MinoSz tetra) :
