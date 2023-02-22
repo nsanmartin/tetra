@@ -21,16 +21,23 @@ variant<Game,int> Game::withDimensions(int w, int h) {
     Point end = Point{cols * block_width, rows * block_width};
 
     variant<SdlMedia,int> maybe = SdlMedia::withDimensions(w, h);
-
     const int slice = 321;
 
-    return variant(visit(overloaded{
-                [&orig, &end, &cols, &rows](SdlMedia& media) {
-                    return variant<Game,int>(Game(media, orig, end, cols, rows, slice));
-                },
-                [](int error) { return variant<Game,int>{error}; }, },
-                maybe)
-            );
+    Behaviour* bptr = new Play{};
+    if (bptr) {
+        unique_ptr<Behaviour> behaviour = unique_ptr<Behaviour>(bptr);
+
+        return variant(visit(overloaded{
+                    // `cols` and `rows` not requiered to be captured fot this use (clang++ error)
+                    [&orig, &end, &behaviour](SdlMedia& media) {
+                        return variant<Game,int>(Game(media, orig, end, cols, rows, slice, behaviour));
+                    },
+                    [](int error) { return variant<Game,int>{error}; }, },
+                    maybe)
+                );
+    } else {
+         return variant<Game,int>{-1}; 
+    }
 }
 
 

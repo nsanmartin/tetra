@@ -37,11 +37,11 @@ class Mino {
 
     virtual void rotate90deg() = 0;
     virtual Mino* clone() = 0;
+    virtual ~Mino() = default;
 };
 
 
 class Tetramino : public Mino {
-    int ctr;
 	Point pos_;
     vector<Point> data_;
     static int _tmp;
@@ -53,7 +53,7 @@ class Tetramino : public Mino {
 
     Tetramino(Tetramino& o) : pos_{o.pos_}, data_{o.data_.begin(), o.data_.end()} {}
 
-    Mino* clone() { return new Tetramino(*this); }
+    Mino* clone() override { return new Tetramino(*this); }
 
 	void stepDown() override { 
         ++pos_.y;
@@ -71,19 +71,19 @@ class Tetramino : public Mino {
                 for_each(data_.begin(), data_.end(), f);
         }
 
-        Point& min(function<bool(const Point&,const Point&)> comp) {
+        Point& min(function<bool(const Point&,const Point&)> comp) override {
             return *min_element(data_.begin(), data_.end(), comp);
         }
 
-        Point& max(function<bool(const Point&,const Point&)> comp) {
+        Point& max(function<bool(const Point&,const Point&)> comp) override {
             return *max_element(data_.begin(), data_.end(), comp);
         }
 
-        bool all(function<bool(const Point&)> prop) {
+        bool all(function<bool(const Point&)> prop) override {
             return all_of(data_.begin(), data_.end(), prop);
         }
 
-        virtual void rotate90deg() {
+        virtual void rotate90deg() override {
             for_each_block([](auto& p) { p.rotate90deg(); });
         }
 };

@@ -1,4 +1,6 @@
 *.swp
 tags
+TAGS
 build
 obj
+tmp

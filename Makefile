@@ -1,35 +1,26 @@
-SDL_CFLAGS := $(shell sdl2-config --cflags)
-SDL_LDFLAGS := $(shell sdl2-config --libs)
+SDL_CFLAGS=`sdl2-config --cflags`
+SDL_LDFLAGS= `sdl2-config --libs`
+CXXFLAGS = -g -std=c++2b -Werror -Wextra -Wall -pedantic -I./include `sdl2-config --cflags --libs`
 
-CFLAGS = -std=c++2b -Werror -Wextra -Wall  -pedantic -I./include 
-#CC = clang++
-CC = g++
+BUILD_DIR=./build
+OBJ_DIR=./obj
+SRC_DIR=./src
 
-BUILD = build
-ODIR=./obj
 HEADERS=$(wildcard include/*.h)
 SRCS=$(wildcard src/*.cpp)
-OBJ=$(SRCS:src/%.cpp=obj/%.o)
+OBJS=$(SRCS:src/%.cpp=obj/%.o)
 
-#SRCS=src/SdlMedia.cpp src/Game.cpp src/util.cpp
+tetra: main.cpp $(OBJS) 
+	$(CXX) -o $(BUILD_DIR)/$@ $^ $(CXXFLAGS) $(SDL_LDFLAGS)
 
-tetra: $(OBJ)
-	$(CC) $(CFLAGS) $(SDL_CFLAGS) -o $(BUILD)/$@ main.cpp $(SRCS) $(SDL_LDFLAGS)
-
-$(ODIR)/%.o: src/%.cpp $(HEADERS)
-	$(CC) $(CFLAGS) $(SDL_CFLAGS) -c -o $@ $< $(SDL_LDFLAGS)
-
-debug:build
-	$(CC) -g $(CFLAGS) $(SDL_CFLAGS) -o $(BUILD)/$@ main.cpp $(SRCS) $(SDL_LDFLAGS)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS) 
+	$(CXX) -c -o $@ $< $(CXXFLAGS) 
 
 
-build:
-	if [ ! -d build ]; then mkdir build; fi
 
-
-tags:
-	ctags -R -e .
-
+TAGS: $(HEADERS) $(SRCS)
+	universal-ctags -R -e .
 
 clean:
-	rm $(ODIR)/*.o build/*
+	find $(BUILD_DIR) -type f -delete
+	find $(OBJ_DIR) -type f -delete

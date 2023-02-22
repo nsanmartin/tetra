@@ -11,7 +11,6 @@
 
 namespace tetra {
 
-using std::move;
 using std::same_as;
 using std::vector;
 using std::ignore;
@@ -36,6 +35,7 @@ class Game {
         virtual void readInput(Game& g) = 0;
         virtual void update(Game& g) = 0;
         virtual int render(Game& g) = 0;
+        virtual ~Behaviour() = default;
     };
 
     SdlMedia media;
@@ -49,10 +49,10 @@ class Game {
     private:
     
 
-    Game(SdlMedia& media, Point board_origin, Point board_end, int cols, int rows, int slice) :
-        media{move(media)},
+    Game(SdlMedia& media, Point board_origin, Point board_end, int cols, int rows, int slice, unique_ptr<Behaviour>& behaviour) :
+        media{std::move(media)},
         state{State::Play},
-        behaviour{new Play{}},
+        behaviour{std::move(behaviour)},
         board{board_origin, board_end, cols, rows, 0},
         slice{slice}
     {}
@@ -64,10 +64,10 @@ class Game {
 
     public:
     Game(Game&& g) noexcept
-        : media{move(g.media)}
+        : media{std::move(g.media)}
         , state{g.state}
-        , behaviour{move(g.behaviour)}
-        , board{move(g.board)}
+        , behaviour{std::move(g.behaviour)}
+        , board{std::move(g.board)}
         , slice{g.slice}
         {}
 

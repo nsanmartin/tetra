@@ -17,7 +17,6 @@ using std::variant;
 using std::pair;
 using std::make_pair;
 using std::unique_ptr;
-using std::move;
 using std::function;
 
 
@@ -40,12 +39,12 @@ class SdlMedia : public Grided {
     SdlMedia& operator=(const SdlMedia& o) = delete;
 
     SdlMedia(int width, int height, WinPtr win, RendPtr rend)
-        : Grided{width, height}, window{move(win)}, renderer{move(rend)} { }
+        : Grided{width, height}, window{std::move(win)}, renderer{std::move(rend)} { }
     static EitherWinRend init(int w, int h);
 
     public:
     SdlMedia(SdlMedia&& m) noexcept :
-        Grided{m.w, m.h}, window{move(m.window)}, renderer{move(m.renderer)} { }
+        Grided{m.w, m.h}, window{std::move(m.window)}, renderer{std::move(m.renderer)} { }
 
     //todo: use expected instead of variant
     static variant<SdlMedia,int> withDimensions(int w, int h);

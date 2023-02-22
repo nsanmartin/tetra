@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <iostream>
+#include <vector>
 
 #include <SdlMedia.h>
 #include <Game.h>
@@ -17,7 +18,11 @@ using tetra::overloaded;
 using std::cout;
 using std::cerr;
 using std::visit;
+using std::vector;
 
+namespace tetra {
+vector<long unsigned> get_minos_table();
+}
 
 constexpr int WINW = 480;
 constexpr int WINH = 640;
@@ -68,4 +73,9 @@ int main() {
         },
         maybe_play
     );
+
+    for (auto n:tetra::get_minos_table()) {
+        cout << n << '\n';
+    }
+
 }

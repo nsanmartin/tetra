@@ -5,7 +5,6 @@ namespace tetra {
 
 using std::variant;
 using std::visit;
-using std::move;
 
 
 SdlMedia::EitherWinRend SdlMedia::init(int w, int h) {
@@ -61,7 +60,7 @@ SdlMedia::Either SdlMedia::withDimensions(int w, int h) {
     SdlMedia::EitherWinRend either = init(w, h);
     return variant(visit(overloaded{
         [&w, &h](WinRendPair& p) {
-            return SdlMedia::Either(SdlMedia( w, h, move(p.first), move(p.second)));
+            return SdlMedia::Either(SdlMedia( w, h, std::move(p.first), std::move(p.second)));
         },
         [](int error) { return SdlMedia::Either{error}; },
         }, either

@@ -1,6 +1,8 @@
+#include <vector>
 #include "Mino.h"
 
 namespace tetra {
+using std::vector;
 long get_time_millis() ;
 
 #define LEN(ARR) (sizeof(ARR)/sizeof(ARR[0]))
@@ -40,6 +42,12 @@ Tetramino* getNthTetra(auto n, Point pos) {
 }
 
 
+static long unsigned minos_table[LEN(tetras)] = {0};
+
+vector<long unsigned> get_minos_table() {
+    return vector<long unsigned>(minos_table, minos_table + LEN(tetras));
+}
+
 Tetramino* Tetramino::Rand(Point pos) {
     static long unsigned not_random = 0;
     long unsigned random, tries = 4;
@@ -52,6 +60,7 @@ Tetramino* Tetramino::Rand(Point pos) {
         random = get_time_millis() % 8;
     }
     while(random >= LEN(tetras));
+    minos_table[random]++;
     return getNthTetra(random, pos);
     
 }

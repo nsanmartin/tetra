@@ -16,7 +16,6 @@ namespace tetra {
 using std::reference_wrapper;
 using std::optional;
 using std::vector;
-using std::move;
 using std::unique_ptr;
 
 class Board : public DrawableGrid {
@@ -33,8 +32,8 @@ class Board : public DrawableGrid {
  	{}
     Board(Board&& o) :
         DrawableGrid{o.w, o.h, o.origin, o.end},
-        blocks{move(o.blocks)},
-	mino{move(o.mino)}
+        blocks{std::move(o.blocks)},
+	mino{std::move(o.mino)}
     {}
 
     optional<reference_wrapper<uint32_t>> at(int x, int y);

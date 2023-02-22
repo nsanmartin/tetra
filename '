@@ -1,0 +1,37 @@
+SDL_CFLAGS := $(shell sdl2-config --cflags)
+SDL_LDFLAGS := $(shell sdl2-config --libs)
+
+CFLAGS = -std=c++2b -Werror -Wextra -Wall  -pedantic -I./include 
+
+BUILD = build
+ODIR=./obj
+SRC_DIR=./src
+HEADERS=include/%.h
+#SRCS=src/%.cpp
+SRCS=$(wildcard src/*.cpp)
+OBJS=$(SRCS:src/%.cpp=obj/%.o)
+
+#SRCS=src/SdlMedia.cpp src/Game.cpp src/util.cpp
+
+tetra: $(OBJS)
+	$(CC) $(CFLAGS) $(SDL_CFLAGS) -o $(BUILD)/$@ main.cpp $^ $(SDL_LDFLAGS)
+
+$(ODIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS) 
+	$(CC) $(CFLAGS) $(SDL_CFLAGS) -c -o $@ $< $(SDL_LDFLAGS)
+
+debug:build
+	$(CC) -g $(CFLAGS) $(SDL_CFLAGS) -o $(BUILD)/$@ main.cpp $(SRCS) $(SDL_LDFLAGS)
+
+
+build:
+	if [ ! -d build ]; then mkdir build; fi
+
+
+tags:
+	ctags -R -e .
+
+$(ODIR):
+	mkdir $(ODIR)
+
+clean:
+	rm $(ODIR)/*.o build/*
