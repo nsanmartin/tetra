@@ -5,19 +5,19 @@
 #include <memory>
 #include <iostream>
 #include <utility>
-#include <variant>
 #include <functional>
+#include <expected>
 #include <SDL.h>
 
 #include "Grided.h"
 
 namespace tetra {
 //using std::deque;
-using std::variant;
 using std::pair;
 using std::make_pair;
 using std::unique_ptr;
 using std::function;
+using std::expected;
 
 
 class SdlMedia : public Grided {
@@ -28,8 +28,8 @@ class SdlMedia : public Grided {
     using WinPtr = unique_ptr<SDL_Window, WinDestroyer>;
     using RendPtr = unique_ptr<SDL_Renderer, RendDestroyer>;
     using WinRendPair = pair<WinPtr,RendPtr>;
-    using EitherWinRend = variant<WinRendPair, int>;
-    using Either = variant<SdlMedia,int>;
+    using EitherWinRend = expected<WinRendPair, int>;
+    using Either = expected<SdlMedia,int>;
     WinPtr window;
     RendPtr renderer;
 
@@ -47,7 +47,7 @@ class SdlMedia : public Grided {
         Grided{m.w, m.h}, window{std::move(m.window)}, renderer{std::move(m.renderer)} { }
 
     //todo: use expected instead of variant
-    static variant<SdlMedia,int> withDimensions(int w, int h);
+    static expected<SdlMedia,int> withDimensions(int w, int h);
 
     SdlMedia& operator=(SdlMedia&& o) noexcept = delete;
 

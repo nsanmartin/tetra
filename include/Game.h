@@ -1,19 +1,22 @@
 #ifndef __H_TETRA_GAME_H_
 #define __H_TETRA_GAME_H_
 
+#include "util.h"
+#include "Board.h"
+#include "SdlMedia.h"
+
 #include <cassert>
 #include <vector>
 #include <tuple>
+#include <expected>
 
-#include "SdlMedia.h"
-#include "util.h"
-#include "Board.h"
 
 namespace tetra {
 
 using std::same_as;
 using std::vector;
 using std::ignore;
+using std::expected;
 
 // template <typename T>
 // concept GameBehaviour = requires (T v) {
@@ -71,7 +74,7 @@ class Game {
         , slice{g.slice}
         {}
 
-    static variant<Game,int> withDimensions(int w, int h);
+    static expected<Game,int> withDimensions(int w, int h);
 
     bool quit() const { return behaviour->quit(); }
     int render() { return behaviour->render(*this); }

@@ -3,8 +3,7 @@
 
 namespace tetra {
 
-using std::variant;
-using std::visit;
+using std::unexpected;
 
 
 SdlMedia::EitherWinRend SdlMedia::init(int w, int h) {
@@ -15,7 +14,7 @@ SdlMedia::EitherWinRend SdlMedia::init(int w, int h) {
     error = SDL_Init (SDL_INIT_VIDEO);
     if (error) {
         fprintf(stderr, "Couldn't initialize SDL\n");
-        return SdlMedia::EitherWinRend(error);
+        return unexpected(error);
     }
 
     atexit (SDL_Quit);
@@ -31,7 +30,7 @@ SdlMedia::EitherWinRend SdlMedia::init(int w, int h) {
     
     if (window == NULL) {
         fprintf(stderr, "SDL_CreateWindow error: %s\n", SDL_GetError());
-        return SdlMedia::EitherWinRend(-1);
+        return unexpected(-1);
     }
     
     //todo: use fullscreen?
@@ -48,23 +47,22 @@ SdlMedia::EitherWinRend SdlMedia::init(int w, int h) {
     if (renderer == NULL) {
         SDL_DestroyWindow(window);
         fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
-        return SdlMedia::EitherWinRend(-1);
+        return unexpected(-1);
     }
 
-    return SdlMedia::EitherWinRend(make_pair(
+    return make_pair(
         SdlMedia::WinPtr(window), SdlMedia::RendPtr(renderer)
-    ));
+    );
 }
 
 SdlMedia::Either SdlMedia::withDimensions(int w, int h) {
     SdlMedia::EitherWinRend either = init(w, h);
-    return variant(visit(overloaded{
-        [&w, &h](WinRendPair& p) {
-            return SdlMedia::Either(SdlMedia( w, h, std::move(p.first), std::move(p.second)));
-        },
-        [](int error) { return SdlMedia::Either{error}; },
-        }, either
-    ));
+    if (either) {
+        return SdlMedia::Either(SdlMedia( w, h, std::move(either->first), std::move(either->second)));
+    } else {
+        return unexpected(either.error());
+    }
+
 }
 
 }

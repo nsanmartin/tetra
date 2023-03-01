@@ -4,6 +4,7 @@
 #include <time.h>
 #include <iostream>
 #include <vector>
+#include <expected>
 
 #include <SdlMedia.h>
 #include <Game.h>
@@ -13,12 +14,10 @@ using tetra::Game;
 using tetra::get_time_millis;
 using tetra::MS_PER_SECOND;
 using tetra::NS_PER_MS;
-using std::variant;
-using tetra::overloaded;
 using std::cout;
 using std::cerr;
-using std::visit;
 using std::vector;
+using std::expected;
 
 namespace tetra {
 vector<long unsigned> get_minos_table();
@@ -65,14 +64,15 @@ void loop(Game& game) {
 //}
 
 int main() {
-    variant<Game,int> maybe_play = Game::withDimensions(WINW, WINH);
+    expected<Game,int> maybe_game = Game::withDimensions(WINW, WINH);
 
-    visit(overloaded {
-            [](Game& game) { loop(game); },
-            [](int error) { cerr << "An error ocurred :/: "<< error <<"\n"; }
-        },
-        maybe_play
-    );
+    if (maybe_game) {
+        Game& game = *maybe_game;
+        loop(game);
+    } else {
+         cerr << "An error ocurred :/: "<< maybe_game.error() <<"\n"; 
+    }
+
 
     for (auto n:tetra::get_minos_table()) {
         cout << n << '\n';
