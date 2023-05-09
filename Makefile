@@ -10,8 +10,8 @@ HEADERS=$(wildcard include/*.h)
 SRCS=$(wildcard src/*.cpp)
 OBJS=$(SRCS:src/%.cpp=obj/%.o)
 
-tetra: main.cpp $(OBJS) 
-	$(CXX) -o $(BUILD_DIR)/$@ $^ $(CXXFLAGS) $(SDL_LDFLAGS)
+$(BUILD_DIR)/tetra: main.cpp $(OBJS) 
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(SDL_LDFLAGS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS) 
 	$(CXX) -c -o $@ $< $(CXXFLAGS) 
