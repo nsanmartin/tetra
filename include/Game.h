@@ -49,12 +49,19 @@ class Game {
     private:
     
 
-    Game(SdlMedia& media, Point board_origin, Point board_end, int cols, int rows, int slice, unique_ptr<Behaviour>& behaviour) :
-        media{std::move(media)},
-        state{State::Play},
-        behaviour{std::move(behaviour)},
-        board{board_origin, board_end, cols, rows, 0},
-        slice{slice}
+    Game(
+        SdlMedia&& media,
+        Point board_origin,
+        Point board_end,
+        int cols,
+        int rows,
+        int slice,
+        unique_ptr<Behaviour>& behaviour
+    ) : media{std::move(media)}
+      , state{State::Play}
+      , behaviour{std::move(behaviour)}
+      , board{board_origin, board_end, cols, rows, 0}
+      , slice{slice}
     {}
 
     Game(Game const&g) = delete;

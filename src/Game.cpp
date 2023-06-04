@@ -10,6 +10,7 @@ using std::get_if;
 using std::make_unique;
 using std::max_element;
 using std::min;
+using std::move;
 
 
 variant<Game,int> Game::withDimensions(int w, int h) {
@@ -28,13 +29,17 @@ variant<Game,int> Game::withDimensions(int w, int h) {
         unique_ptr<Behaviour> behaviour = unique_ptr<Behaviour>(bptr);
 
         return variant(visit(overloaded{
-                    // `cols` and `rows` not requiered to be captured fot this use (clang++ error)
-                    [&orig, &end, &behaviour](SdlMedia& media) {
-                        return variant<Game,int>(Game(media, orig, end, cols, rows, slice, behaviour));
-                    },
-                    [](int error) { return variant<Game,int>{error}; }, },
-                    maybe)
+            // `cols` and `rows` not requiered to be captured
+            // for this use (clang++ error)
+            [&orig, &end, &behaviour](SdlMedia& media) {
+                return variant<Game,int>(Game(
+                        move(media), orig, end, cols, rows, slice, behaviour
+                    )
                 );
+            },
+            [](int error) { return variant<Game,int>{error}; }, },
+            maybe)
+        );
     } else {
          return variant<Game,int>{-1}; 
     }
@@ -42,7 +47,8 @@ variant<Game,int> Game::withDimensions(int w, int h) {
 
 
 static bool sdl_quit_event(const SDL_Event* e) {
-    return e->type == SDL_QUIT || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_q);
+    return e->type == SDL_QUIT
+        || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_q);
 }
 
 void Game::changeState(Game::Behaviour* newstate) {
