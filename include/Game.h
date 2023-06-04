@@ -2,8 +2,9 @@
 #define __H_TETRA_GAME_H_
 
 #include <cassert>
-#include <vector>
+#include <expected>
 #include <tuple>
+#include <vector>
 
 #include "SdlMedia.h"
 #include "util.h"
@@ -78,7 +79,7 @@ class Game {
         , slice{g.slice}
         {}
 
-    static variant<Game,int> withDimensions(int w, int h);
+    static std::expected<Game,int> withDimensions(int w, int h);
 
     bool quit() const { return behaviour->quit(); }
     int render() { return behaviour->render(*this); }

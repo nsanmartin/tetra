@@ -1,10 +1,11 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <unistd.h>
-#include <time.h>
-#include <iostream>
-#include <vector>
 
+#include <expected>
+#include <iostream>
+#include <stdbool.h>
+#include <stdio.h>
+#include <time.h>
+#include <unistd.h>
+#include <vector>
 #include <SdlMedia.h>
 #include <Game.h>
 #include "util.h"
@@ -13,11 +14,8 @@ using tetra::Game;
 using tetra::get_time_millis;
 using tetra::MS_PER_SECOND;
 using tetra::NS_PER_MS;
-using std::variant;
-using tetra::overloaded;
 using std::cout;
 using std::cerr;
-using std::visit;
 using std::vector;
 
 namespace tetra {
@@ -54,25 +52,13 @@ void loop(Game& game) {
     }
 }
 
-//void run_game (YrrGame* game) {
-//    do {
-//        loop(game);
-//        yrrGamePrintResults(game);
-//        if (game->state != YrrStateGameOver) { return; }
-//        int error = yrrResetGame(game);
-//        if (error) { return; }
-//    } while (true);
-//}
-
 int main() {
-    variant<Game,int> maybe_play = Game::withDimensions(WINW, WINH);
-
-    visit(overloaded {
-            [](Game& game) { loop(game); },
-            [](int error) { cerr << "An error ocurred :/: "<< error <<"\n"; }
-        },
-        maybe_play
-    );
+    std::expected<Game,int> maybe_play = Game::withDimensions(WINW, WINH);
+    if (!maybe_play.has_value()) {
+         cerr << "An error ocurred :/: "<< maybe_play.error() <<"\n";
+    } else {
+        loop(*maybe_play);
+    }
 
     for (auto n:tetra::get_minos_table()) {
         cout << n << '\n';

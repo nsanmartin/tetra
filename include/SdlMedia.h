@@ -2,18 +2,18 @@
 #define __H_SDL_MEDIA_H_
 
 //#include <deque>
-#include <memory>
-#include <iostream>
-#include <utility>
-#include <variant>
+#include <expected>
 #include <functional>
+#include <iostream>
+#include <memory>
+#include <utility>
+
 #include <SDL.h>
 
 #include "Grided.h"
 
 namespace tetra {
 //using std::deque;
-using std::variant;
 using std::pair;
 using std::make_pair;
 using std::unique_ptr;
@@ -28,8 +28,6 @@ class SdlMedia : public Grided {
     using WinPtr = unique_ptr<SDL_Window, WinDestroyer>;
     using RendPtr = unique_ptr<SDL_Renderer, RendDestroyer>;
     using WinRendPair = pair<WinPtr,RendPtr>;
-    using EitherWinRend = variant<WinRendPair, int>;
-    using Either = variant<SdlMedia,int>;
     WinPtr window;
     RendPtr renderer;
 
@@ -40,14 +38,15 @@ class SdlMedia : public Grided {
 
     SdlMedia(int width, int height, WinPtr win, RendPtr rend)
         : Grided{width, height}, window{std::move(win)}, renderer{std::move(rend)} { }
-    static EitherWinRend init(int w, int h);
+
+    static std::expected<WinRendPair,int> initialize(int w, int h);
 
     public:
     SdlMedia(SdlMedia&& m) noexcept :
         Grided{m.w, m.h}, window{std::move(m.window)}, renderer{std::move(m.renderer)} { }
 
     //todo: use expected instead of variant
-    static variant<SdlMedia,int> withDimensions(int w, int h);
+    static std::expected<SdlMedia,int> withDimensions(int w, int h);
 
     SdlMedia& operator=(SdlMedia&& o) noexcept = delete;
 

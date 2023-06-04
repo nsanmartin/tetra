@@ -6,14 +6,13 @@
 namespace tetra {
 
 using std::get;
-using std::get_if;
 using std::make_unique;
 using std::max_element;
 using std::min;
 using std::move;
 
 
-variant<Game,int> Game::withDimensions(int w, int h) {
+std::expected<Game,int> Game::withDimensions(int w, int h) {
     const int cols = 10;
     const int rows = 25;
     const int block_width = min(w/cols, h/rows);
@@ -21,27 +20,18 @@ variant<Game,int> Game::withDimensions(int w, int h) {
     Point orig = Point{block_width, 1};
     Point end = Point{cols * block_width, rows * block_width};
 
-    variant<SdlMedia,int> maybe = SdlMedia::withDimensions(w, h);
+    auto maybe = SdlMedia::withDimensions(w, h);
+    if (!maybe.has_value()) {
+        return std::unexpected(maybe.error());
+    }
     const int slice = 321;
 
     Behaviour* bptr = new Play{};
     if (bptr) {
         unique_ptr<Behaviour> behaviour = unique_ptr<Behaviour>(bptr);
-
-        return variant(visit(overloaded{
-            // `cols` and `rows` not requiered to be captured
-            // for this use (clang++ error)
-            [&orig, &end, &behaviour](SdlMedia& media) {
-                return variant<Game,int>(Game(
-                        move(media), orig, end, cols, rows, slice, behaviour
-                    )
-                );
-            },
-            [](int error) { return variant<Game,int>{error}; }, },
-            maybe)
-        );
+        return Game(move(*maybe), orig, end, cols, rows, slice, behaviour);
     } else {
-         return variant<Game,int>{-1}; 
+         return std::unexpected(-1);
     }
 }
 
